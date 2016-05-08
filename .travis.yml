@@ -1,0 +1,6 @@
+language: haskell
+install:
+  - npm install -g elm
+  - npm install -g gulp
+  - elm-package install -y
+script: npm test
