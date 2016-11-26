@@ -1,102 +1,132 @@
 module Grid
     exposing
-        ( GridPosition
-        , isInRange
-        , isTaken
-        , getPosition
-        , getPositions
+        ( Position
+        , Item
+        , solve
         )
 
-{-| Some desc
+{-| Build awesome Grid layouts in Elm.
+
+This library provides general abstraction for solving grid layout problems.
+The idea is to use **ordered list of items with dimmensions** and **number of columns**
+to solve whole layout of grid. It's designed to be easy to use and extremly deterministic
+abstraction with simple integration to any Html, SVG or Canvas based APP.
 
 # Definition
-@docs GridPosition
+@docs Position, Item
 
 # Api
-@docs isInRange, isTaken, getPosition, getPositions
+@docs solve
 -}
 
 import List
 import Maybe
 
 
-{-|
--}
-type alias GridPosition =
-    { x : Int
-    , y : Int
-    }
+-- Modules
+
+import Utils exposing (..)
+import Types exposing (GridPosition, GridItem)
+
+
+-- Types
 
 
 {-|
 -}
-isInRange : Int -> Int -> Int -> Bool
-isInRange min max value =
-    value >= min && value < max
+type alias Position =
+    Types.GridPosition
 
 
 {-|
 -}
-isTaken :
-    List ( GridPosition, { a | height : Int, width : Int } )
-    -> GridPosition
-    -> Bool
-isTaken grid position =
-    let
-        conflictX pos item =
-            isInRange pos.x (item.width + pos.x) position.x
-
-        conflictY pos item =
-            isInRange pos.y (item.height + pos.y) position.y
-    in
-        List.length (List.filter (\( position, item ) -> (conflictX position item) && (conflictY position item)) grid) > 0
+type alias Item a =
+    Types.GridItem a
 
 
-{-|
+
+-- Public Api
+
+
+{-| This function is heart and the only public function
+this library provides. It calculates grid layout
+for given number of columns and items with dimmensions.
+You can then use result (List of tuples with `Position` and `Item`)
+in you're views to simply render layout as you wish.
+Order of items is guaranteed to stay same.
+
+- `Int` - number of Columns
+- `List` - Grid items
+
+## Four column example:
+
+    -- Expected result:
+    -- ================
+    --    0 1 2 3
+    -- 0 |A|A|A|A|
+    -- 1 |A|A|A|A|
+    -- 2 |B|B|C|C|
+    -- 3 | | |C|C|
+
+    solve 4
+        [ { width = 4, height = 2 }
+        , { width = 2, height = 1 }
+        , { width = 2, height = 2 }
+        ]
+    ==
+    [ ( { x = 0, y = 0 }, { width = 4, height = 2 } )
+    , ( { x = 0, y = 2 }, { width = 2, height = 1 } )
+    , ( { x = 2, y = 2 }, { width = 2, height = 2 } )
+    ]
+
+
+## Two column example:
+
+    -- Expected result:
+    -- ================
+    --    0 1
+    -- 0 |A|A|
+    -- 1 |B| |
+    -- 2 |B| |
+    -- 3 |C|C|
+
+    solve 2
+        [ { width = 2, height = 1 }
+        , { width = 1, height = 2 }
+        , { width = 2, height = 1 }
+        ]
+    ==
+    [ ( { x = 0, y = 0 }, { width = 2, height = 1 } )
+    , ( { x = 0, y = 1 }, { width = 1, height = 2 } )
+    , ( { x = 0, y = 3 }, { width = 2, height = 1 } )
+    ]
+
+## More complex layout:
+
+    -- Expected result:
+    -- ================
+    --    0 1 2 3
+    -- 0 |A|A|B|B|
+    -- 1 |C|C|B|B|
+    -- 2 | | |B|B|
+    -- 3 |D|D|D|D|
+
+    solve 4
+        [ { width = 2, height = 1 }
+        , { width = 2, height = 3 }
+        , { width = 2, height = 1 }
+        , { width = 4, height = 1 }
+        ]
+    ==
+    [ ( { x = 0, y = 0 }, { width = 2, height = 1 } )
+    , ( { x = 2, y = 0 }, { width = 2, height = 3 } )
+    , ( { x = 0, y = 1 }, { width = 2, height = 1 } )
+    , ( { x = 0, y = 3 }, { width = 4, height = 1 } )
+    ]
 -}
-getPosition :
+solve :
     Int
-    -> List ( GridPosition, { a | width : Int, height : Int } )
-    -> { a | width : Int, height : Int }
-    -> ( GridPosition, { a | width : Int, height : Int } )
-getPosition perRow grid item =
-    let
-        last =
-            List.reverse grid |> List.head
-
-        nextPosition position =
-            if position.x + item.width < perRow then
-                { x = position.x + 1, y = position.y }
-            else
-                { x = 0, y = position.y + 1 }
-
-        firstTryPosition =
-            case last of
-                Just ( lastPosition, lastItem ) ->
-                    nextPosition
-                        { x = lastPosition.x + lastItem.width - 1
-                        , y = lastPosition.y
-                        }
-
-                Nothing ->
-                    { x = 0, y = 0 }
-
-        tryPosition position =
-            case isTaken grid position of
-                True ->
-                    tryPosition (nextPosition position)
-
-                False ->
-                    position
-    in
-        ( (tryPosition firstTryPosition), item )
-
-
-{-|
--}
-getPositions :
-    Int
-    -> List { a | width : Int, height : Int }
-    -> List ( GridPosition, { a | width : Int, height : Int } )
-getPositions perRow list =
+    -> List (Item a)
+    -> List ( Position, Item a )
+solve perRow list =
     List.foldl (\item acc -> acc ++ [ (getPosition perRow acc item) ]) [] list

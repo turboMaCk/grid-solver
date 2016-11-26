@@ -1,6 +1,27 @@
-language: haskell
+sudo: false
+
+os:
+  - linux
+  - osx
+
+env:
+  matrix:
+    - ELM_VERSION=0.18.0 TARGET_NODE_VERSION=node
+    - ELM_VERSION=0.18.0 TARGET_NODE_VERSION=4.0
+
+before_install:
+  - if [ ${TRAVIS_OS_NAME} == "osx" ];
+    then brew update; brew install nvm; mkdir ~/.nvm; export NVM_DIR=~/.nvm; source $(brew --prefix nvm)/nvm.sh;
+    fi
+  - echo -e "Host github.com\n\tStrictHostKeyChecking no\n" >> ~/.ssh/config
+
 install:
-  - npm install -g elm
-  - npm install -g gulp
-  - elm-package install -y
-script: npm test
+  - nvm install $TARGET_NODE_VERSION
+  - nvm use $TARGET_NODE_VERSION
+  - node --version
+  - npm --version
+  - npm install -g elm@$ELM_VERSION
+  - npm install
+
+script:
+  - npm test
