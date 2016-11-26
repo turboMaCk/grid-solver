@@ -1,20 +1,34 @@
 module GridBuilder exposing (GridPosition, isInRange, isTaken, getPosition, getPositions)
+{-| Some desc
+
+# Definition
+@docs GridPosition
+
+# Api
+@docs isInRange, isTaken, getPosition, getPositions
+-}
 
 import List
 import Maybe
 
 
+{-|
+-}
 type alias GridPosition =
     { x : Int
     , y : Int
     }
 
 
+{-|
+-}
 isInRange : Int -> Int -> Int -> Bool
 isInRange min max value =
     value >= min && value < max
 
 
+{-|
+-}
 isTaken :
     List ( GridPosition, { a | height : Int, width : Int } )
     -> GridPosition
@@ -30,6 +44,8 @@ isTaken grid position =
         List.length (List.filter (\( position, item ) -> (conflictX position item) && (conflictY position item)) grid) > 0
 
 
+{-|
+-}
 getPosition :
     Int
     -> List ( GridPosition, { a | width : Int, height : Int } )
@@ -68,9 +84,11 @@ getPosition perRow grid item =
         ( (tryPosition firstTryPosition), item )
 
 
+{-|
+-}
 getPositions :
     Int
     -> List { a | width : Int, height : Int }
     -> List ( GridPosition, { a | width : Int, height : Int } )
 getPositions perRow list =
-    List.foldr (\item acc -> (getPosition perRow acc item) :: acc) [] list
+    List.foldl (\item acc -> acc ++ [(getPosition perRow acc item)]) [] list

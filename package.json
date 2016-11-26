@@ -1,20 +1,25 @@
 {
-  "name": "elm-test-gulp",
-  "version": "0.0.1",
-  "description": "Testing el",
-  "main": "tmp/test.js",
+  "name": "grid-solver",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
   "directories": {
-    "test": "gulp test"
+    "test": "tests"
+  },
+  "scripts": {
+    "test": "elm-test"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/turboMaCk/grid-solver.git"
   },
   "author": "Marek Fajkus",
   "license": "BSD-3-Clause",
-  "devDependencies": {
-    "gulp": "^3.9.1",
-    "gulp-elm": "^0.2.0",
-    "gulp-shell": "^0.5.2",
-    "gulp-watch": "^4.3.5"
+  "bugs": {
+    "url": "https://github.com/turboMaCk/grid-solver/issues"
   },
-  "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+  "homepage": "https://github.com/turboMaCk/grid-solver#readme",
+  "devDependencies": {
+    "elm-test": "0.18.0"
   }
 }
