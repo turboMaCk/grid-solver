@@ -1,4 +1,12 @@
-module GridBuilder exposing (GridPosition, isInRange, isTaken, getPosition, getPositions)
+module Grid
+    exposing
+        ( GridPosition
+        , isInRange
+        , isTaken
+        , getPosition
+        , getPositions
+        )
+
 {-| Some desc
 
 # Definition
@@ -91,4 +99,4 @@ getPositions :
     -> List { a | width : Int, height : Int }
     -> List ( GridPosition, { a | width : Int, height : Int } )
 getPositions perRow list =
-    List.foldl (\item acc -> acc ++ [(getPosition perRow acc item)]) [] list
+    List.foldl (\item acc -> acc ++ [ (getPosition perRow acc item) ]) [] list

@@ -2,7 +2,7 @@ module Tests exposing (..)
 
 import Test exposing (..)
 import Expect
-import GridBuilder exposing (..)
+import Grid exposing (..)
 import Tuple exposing (first)
 
 
@@ -17,7 +17,7 @@ all =
 
 
 type alias Fixture =
-    ( GridBuilder.GridPosition, { width : Int, height : Int } )
+    ( GridPosition, { width : Int, height : Int } )
 
 
 rangeTest : Test
@@ -25,23 +25,23 @@ rangeTest =
     describe "isInRange"
         [ test "2 is in range <1,5]" <|
             \() -> (Expect.equal True
-                (GridBuilder.isInRange 1 5 2)
+                (isInRange 1 5 2)
             )
         , test "7 is not in range 1..6]" <|
             \() -> (Expect.equal False
-                (GridBuilder.isInRange 1 6 7)
+                (isInRange 1 6 7)
             )
         , test "1.01 is in range <1, 2]" <|
             \() -> (Expect.equal True
-                (GridBuilder.isInRange 1 2 1)
+                (isInRange 1 2 1)
             )
         , test "1 is in range <1, 2]" <|
             \() -> (Expect.equal True
-                (GridBuilder.isInRange 1 2 1)
+                (isInRange 1 2 1)
             )
         , test "2 is not in range <1,2]" <|
             \() -> (Expect.equal False
-                (GridBuilder.isInRange 1 2 2)
+                (isInRange 1 2 2)
             )
         ]
 
@@ -66,7 +66,7 @@ isTakenTest =
             ]
 
         grid =
-            GridBuilder.isTaken state
+            isTaken state
     in
         describe "isTaken"
             [ test "0,0 is taken" <|
@@ -144,7 +144,7 @@ getPositionTest =
         describe "getPosition"
             [ test "First position in grid" <|
                 \() -> (Expect.equal { x = 0, y = 0 }
-                    (GridBuilder.getPosition 4 [] (item 0 0) |> first)
+                    (getPosition 4 [] (item 0 0) |> first)
                 )
               -- Expected result (N is New):
               -- ================
@@ -154,7 +154,7 @@ getPositionTest =
               -- 2 | | |N|N|
             , test "" <|
                 \() -> (Expect.equal { x = 2, y = 1 }
-                    (GridBuilder.getPosition 4 grid1 (item 2 2) |> first)
+                    (getPosition 4 grid1 (item 2 2) |> first)
                 )
               -- Expected result (N is New):
               -- ================
@@ -164,7 +164,7 @@ getPositionTest =
               -- 2 |N|N|N| |
             , test "" <|
                 \() -> (Expect.equal { x = 0, y = 2 }
-                    (GridBuilder.getPosition 4 grid1 (item 3 1) |> first)
+                    (getPosition 4 grid1 (item 3 1) |> first)
                 )
               -- Expected result (N is New):
               -- ================
@@ -174,7 +174,7 @@ getPositionTest =
               -- 2 | | | | | | | |
             , test "" <|
                 \() -> (Expect.equal { x = 4, y = 0 }
-                    (GridBuilder.getPosition 7 grid1 (item 3 2) |> first)
+                    (getPosition 7 grid1 (item 3 2) |> first)
                 )
             ]
 
@@ -195,7 +195,7 @@ getPositionsTest =
                 , ( { x = 0, y = 2 }, { width = 2, height = 1 } )
                 , ( { x = 2, y = 2 }, { width = 2, height = 2 } )
                 ]
-                (GridBuilder.getPositions 4
+                (getPositions 4
                     [ { width = 4, height = 2 }
                     , { width = 2, height = 1 }
                     , { width = 2, height = 2 }
@@ -215,7 +215,7 @@ getPositionsTest =
                 , ( { x = 0, y = 1 }, { width = 1, height = 2 } )
                 , ( { x = 0, y = 3 }, { width = 2, height = 1 } )
                 ]
-                (GridBuilder.getPositions 2
+                (getPositions 2
                     [ { width = 2, height = 1 }
                     , { width = 1, height = 2 }
                     , { width = 2, height = 1 }
