@@ -33,12 +33,21 @@ import Types exposing (GridPosition, GridItem)
 
 
 {-|
+    type alias GridPosition =
+        { x : Int
+        , y : Int
+        }
 -}
 type alias Position =
     Types.GridPosition
 
 
 {-|
+    type alias GridItem a =
+        { a
+            | width : Int
+            , height : Int
+        }
 -}
 type alias Item a =
     Types.GridItem a
