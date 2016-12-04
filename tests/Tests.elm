@@ -180,7 +180,7 @@ getPositionTest =
             [ test "First position in grid" <|
                 \() ->
                     (Expect.equal { x = 0, y = 0 }
-                        (getPosition 4 [] (item 0 0) |> first)
+                        (getPosition identity 4 [] (item 0 0) |> first)
                     )
               -- Expected result (N means New):
               -- ================
@@ -191,7 +191,7 @@ getPositionTest =
             , test "Under previous" <|
                 \() ->
                     (Expect.equal { x = 2, y = 1 }
-                        (getPosition 4 grid1 (item 2 2) |> first)
+                        (getPosition identity 4 grid1 (item 2 2) |> first)
                     )
               -- Expected result (N means New):
               -- ================
@@ -202,7 +202,7 @@ getPositionTest =
             , test "One new row" <|
                 \() ->
                     (Expect.equal { x = 0, y = 2 }
-                        (getPosition 4 grid1 (item 3 1) |> first)
+                        (getPosition identity 4 grid1 (item 3 1) |> first)
                     )
               -- Expected result (N means New):
               -- ================
@@ -213,7 +213,7 @@ getPositionTest =
             , test "On same line" <|
                 \() ->
                     (Expect.equal { x = 4, y = 0 }
-                        (getPosition 7 grid1 (item 3 2) |> first)
+                        (getPosition identity 7 grid1 (item 3 2) |> first)
                     )
             ]
 
@@ -235,7 +235,7 @@ solveTest =
                     , ( { x = 0, y = 2 }, { width = 2, height = 1 } )
                     , ( { x = 2, y = 2 }, { width = 2, height = 2 } )
                     ]
-                    (solve 4
+                    (solve identity 4
                         [ { width = 4, height = 2 }
                         , { width = 2, height = 1 }
                         , { width = 2, height = 2 }
@@ -256,7 +256,7 @@ solveTest =
                     , ( { x = 0, y = 1 }, { width = 1, height = 2 } )
                     , ( { x = 0, y = 3 }, { width = 2, height = 1 } )
                     ]
-                    (solve 2
+                    (solve identity 2
                         [ { width = 2, height = 1 }
                         , { width = 1, height = 2 }
                         , { width = 2, height = 1 }
@@ -278,7 +278,7 @@ solveTest =
                     , ( { x = 0, y = 1 }, { width = 2, height = 1 } )
                     , ( { x = 0, y = 3 }, { width = 4, height = 1 } )
                     ]
-                    (solve 4
+                    (solve identity 4
                         [ { width = 2, height = 1 }
                         , { width = 2, height = 3 }
                         , { width = 2, height = 1 }

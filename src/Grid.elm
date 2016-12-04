@@ -1,7 +1,7 @@
 module Grid
     exposing
         ( Position
-        , Item
+        , Size
         , solve
         )
 
@@ -26,7 +26,7 @@ import Maybe
 -- Modules
 
 import Utils exposing (..)
-import Types exposing (GridPosition, GridItem)
+import Types exposing (GridPosition, GridSize)
 
 
 -- Types
@@ -43,14 +43,13 @@ type alias Position =
 
 
 {-|
-    type alias GridItem a =
-        { a
-            | width : Int
-            , height : Int
+    type alias GridSize =
+        { width : Int
+        , height : Int
         }
 -}
-type alias Item a =
-    Types.GridItem a
+type alias Size =
+    Types.GridSize
 
 
 
@@ -64,6 +63,7 @@ You can then use result (List of tuples with `Position` and `Item`)
 in you're views to simply render layout as you wish.
 Order of items is guaranteed to stay same.
 
+- `(a -> Size)` Function from item to Size
 - `Int` - number of Columns
 - `List` - Grid items
 
@@ -77,7 +77,7 @@ Order of items is guaranteed to stay same.
     -- 2 |B|B|C|C|
     -- 3 | | |C|C|
 
-    solve 4
+    solve identity 4
         [ { width = 4, height = 2 }
         , { width = 2, height = 1 }
         , { width = 2, height = 2 }
@@ -99,7 +99,7 @@ Order of items is guaranteed to stay same.
     -- 2 |B| |
     -- 3 |C|C|
 
-    solve 2
+    solve identity 2
         [ { width = 2, height = 1 }
         , { width = 1, height = 2 }
         , { width = 2, height = 1 }
@@ -120,7 +120,7 @@ Order of items is guaranteed to stay same.
     -- 2 | | |B|B|
     -- 3 |D|D|D|D|
 
-    solve 4
+    solve identity 4
         [ { width = 2, height = 1 }
         , { width = 2, height = 3 }
         , { width = 2, height = 1 }
@@ -134,8 +134,9 @@ Order of items is guaranteed to stay same.
     ]
 -}
 solve :
-    Int
-    -> List (Item a)
-    -> List ( Position, Item a )
-solve perRow list =
-    List.foldl (\item acc -> acc ++ [ (getPosition perRow acc item) ]) [] list
+    (a -> Size)
+    -> Int
+    -> List a
+    -> List ( Position, a )
+solve getSize perRow list =
+    List.foldl (\item acc -> acc ++ [ (getPosition getSize perRow acc item) ]) [] list

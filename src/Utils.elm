@@ -1,6 +1,6 @@
 module Utils exposing (..)
 
-import Types exposing (GridPosition, GridItem)
+import Types exposing (GridPosition, GridSize)
 
 
 isInRange : Int -> Int -> Int -> Bool
@@ -9,16 +9,16 @@ isInRange min max value =
 
 
 isTaken :
-    List ( GridPosition, GridItem a )
+    List ( GridPosition, GridSize )
     -> GridPosition
     -> Bool
 isTaken grid position =
     let
-        conflictX : GridPosition -> GridItem a -> Bool
+        conflictX : GridPosition -> GridSize -> Bool
         conflictX pos item =
             isInRange pos.x (item.width + pos.x) position.x
 
-        conflictY : GridPosition -> GridItem a -> Bool
+        conflictY : GridPosition -> GridSize -> Bool
         conflictY pos item =
             isInRange pos.y (item.height + pos.y) position.y
     in
@@ -31,15 +31,20 @@ isTaken grid position =
 
 
 getPosition :
-    Int
-    -> List ( GridPosition, GridItem a )
-    -> GridItem a
-    -> ( GridPosition, GridItem a )
-getPosition perRow grid item =
+    (a -> GridSize)
+    -> Int
+    -> List ( GridPosition, a )
+    -> a
+    -> ( GridPosition, a )
+getPosition getSize perRow grid originalItem =
     let
-        last : Maybe ( GridPosition, GridItem a)
+        item : GridSize
+        item =
+            getSize originalItem
+
+        last : Maybe ( GridPosition, GridSize )
         last =
-            List.reverse grid |> List.head
+            List.reverse grid |> List.head |> Maybe.map (\(pos, a) -> (pos, getSize a))
 
         nextPosition : GridPosition -> GridPosition
         nextPosition position =
@@ -65,11 +70,11 @@ getPosition perRow grid item =
             let
                 subCollisions =
                     List.range 0 (item.width - 1)
-                        |> List.filter (\i -> isTaken grid { x = position.x + i, y = position.y })
+                        |> List.filter (\i -> isTaken (List.map (\(pos, a) -> (pos, getSize a)) grid) { x = position.x + i, y = position.y })
             in
                 if List.isEmpty subCollisions then
                     position
                 else
                     tryPosition (nextPosition position)
     in
-        ( (tryPosition firstTryPosition), item )
+        ( (tryPosition firstTryPosition), originalItem )

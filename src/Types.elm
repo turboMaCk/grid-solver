@@ -1,4 +1,4 @@
-module Types exposing (GridPosition, GridItem)
+module Types exposing (GridPosition, GridSize)
 
 
 type alias GridPosition =
@@ -7,8 +7,7 @@ type alias GridPosition =
     }
 
 
-type alias GridItem a =
-    { a
-        | width : Int
-        , height : Int
+type alias GridSize =
+    { width : Int
+    , height : Int
     }
