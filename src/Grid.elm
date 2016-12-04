@@ -13,7 +13,7 @@ to solve whole layout of grid. It's designed to be easy to use and extremly dete
 abstraction with simple integration to any Html, SVG or Canvas based APP.
 
 # Definition
-@docs Position, Item
+@docs Position, Size
 
 # Api
 @docs solve
