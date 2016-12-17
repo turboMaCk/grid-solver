@@ -7,6 +7,10 @@ The idea is to use **ordered list of items with dimmensions** and **number of co
 to solve whole layout of grid. It's designed to be easy to use and extremly deterministic
 abstraction with simple integration to any Html, SVG or Canvas based APP.
 
+## Demo
+
+[Demo application](https://turbomack.github.io/grid-solver) together with [source code](/demo/Main.elm) is part of this repository.
+
 ## Documentation
 
 Please [read official documentation](http://package.elm-lang.org/packages/turboMaCk/grid-solver/latest) to get started.
